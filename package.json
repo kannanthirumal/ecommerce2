@@ -5,7 +5,7 @@
   "main": "server.js",
   "scripts": {
     "start": "node server",
-    "test": "cross-env NODE_ENV=test jest --testTimeout=10000 --coverage"
+    "test": "jest"
   },
   "author": "Kannan Thirumalsamy",
   "license": "ISC",
