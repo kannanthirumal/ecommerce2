@@ -3,7 +3,7 @@ module.exports = {
     HOST: "localhost",
     USER: "root",
     PASSWORD: "596$?KFn#3lwM",
-    DB: "ecom_db",
+    DB: "ecomm_db",
     dialect: "mysql",
     pool: {
       max: 5,
