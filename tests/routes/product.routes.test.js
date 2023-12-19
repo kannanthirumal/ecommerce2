@@ -79,3 +79,8 @@ describe("get details of on product endpoint", () => {
     expect(res.status).toEqual(200);
   });
 });
+
+afterAll(async () => {
+  // Close Sequelize connection after all tests
+  await db.sequelize.close();
+});

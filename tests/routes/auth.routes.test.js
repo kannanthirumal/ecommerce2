@@ -1,3 +1,4 @@
+const db = require("../../models");
 const request = require("supertest");
 const { app, initializationPromise } = require("../../app");
 
@@ -33,4 +34,9 @@ describe("signup", () => {
 
     expect(res.status).toEqual(200);
   });
+});
+
+afterAll(async () => {
+  // Close Sequelize connection after all tests
+  await db.sequelize.close();
 });

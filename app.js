@@ -38,8 +38,10 @@ const initRoles = async () => {
      */
     await Role.findOrCreate({ where: { id: 1, name: "user" } });
     await Role.findOrCreate({ where: { id: 2, name: "admin" } });
-
     // Perform role initialization
+
+    // Close Sequelize connection after initialization
+    // await sequelize.close();
   } catch (err) {
     console.log("Error: ", err);
   }
