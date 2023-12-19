@@ -23,49 +23,85 @@ const db = require("./models");
 const Category = db.category;
 const Product = db.product;
 const Role = db.role;
+const sequelize = db.sequelize;
+const Sequelize = db.Sequelize;
 
 //Setting the One to Many relationship between Category and Product
 Category.hasMany(Product); // This will create a foreign key column( categoryId) in Product table
 
-console.log(Category);
-db.sequelize.sync({ force: true }).then(() => {
-  console.log("tables dropped and recreated");
-  init();
-});
+const initRoles = async () => {
+  try {
+    await db.sequelize.sync({ force: true });
+    console.log("tables dropped and recreated");
+    /**
+     * Adding Roles
+     */
+    await Role.findOrCreate({ where: { id: 1, name: "user" } });
+    await Role.findOrCreate({ where: { id: 2, name: "admin" } });
 
-function init() {
-  //Initializing few Categories
-  var categories = [
-    {
-      name: "Electronics",
-      description: "This category will contain all the electronic products",
-    },
-    {
-      name: "KitchenItems",
-      description:
-        "This category will contain all the Kitchen related products",
-    },
-  ];
+    // Perform role initialization
+  } catch (err) {
+    console.log("Error: ", err);
+  }
+};
 
-  Category.bulkCreate(categories)
-    .then(() => {
-      console.log("Categories table is initialized");
-    })
-    .catch((err) => {
-      console.log("Error while initializing ategories table");
-    });
+const initializationPromise = initRoles();
 
-  /**
-   * Adding roles
-   */
-  Role.create({
-    id: 1,
-    name: "user",
-  });
-  Role.create({
-    id: 2,
-    name: "admin",
-  });
-}
+// console.log(Category);
+// db.sequelize.sync({ force: true }).then(() => {
+//   console.log("tables dropped and recreated");
+//   init();
+// });
 
-module.exports = app;
+// function init() {
+//Initializing few Categories
+//   var categories = [
+//     {
+//       name: "Electronics",
+//       description: "This category will contain all the electronic products",
+//     },
+//     {
+//       name: "KitchenItems",
+//       description:
+//         "This category will contain all the Kitchen related products",
+//     },
+//   ];
+
+//   Category.bulkCreate(categories)
+//     .then(() => {
+//       console.log("Categories table is initialized");
+//     })
+//     .catch((err) => {
+//       console.log("Error while initializing ategories table");
+//     });
+
+/**
+ * Adding roles
+ */
+//   Role.create({
+//     id: 1,
+//     name: "user",
+//   });
+//   Role.create({
+//     id: 2,
+//     name: "admin",
+//   });
+// }
+
+/**
+ * Importing the routes and using it
+ */
+require("./routes/category.routes")(app);
+require("./routes/product.routes")(app);
+require("./routes/auth.routes")(app);
+require("./routes/cart.routes")(app);
+
+/**
+ * Made initRoles async and exporting the "initializationPromise" promise to make sure, files which are importing the app
+ * make use of this "initializationPromise" promise to wait till the app gets fully initialised before they could use it
+ * in their process
+ */
+module.exports = {
+  app,
+  initializationPromise,
+};
